@@ -312,7 +312,7 @@ class FacebookBackend:
             if not user:
                 try:
                     user = User.objects.get(email=fb_data['email'])
-                except User.DoesNotExist:
+                except (KeyError, User.DoesNotExist):
                     user = False
                 
                 try:
@@ -322,7 +322,7 @@ class FacebookBackend:
                 
             if not user and not email:
                 user = User.objects.create(username=username,
-                                           email=fb_data['email'],
+                                           email=getattr(fb_data, 'email', ''),
                                            first_name=fb_data['first_name'],
                                            last_name=fb_data['last_name']
                                           )
